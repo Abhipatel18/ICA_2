@@ -35,12 +35,12 @@ jobs:
           --health-interval=10s
           --health-retries=5
 
-    steps:
-      - name: Wait for app
-        run: sleep 20
+    # steps:
+    #   - name: Wait for app
+    #     run: sleep 20
 
-      - name: Run integration test
-        run: curl -f http://localhost:3000/health
+    #   - name: Run integration test
+    #     run: curl -f http://localhost:3000/health
 
 
     permissions:

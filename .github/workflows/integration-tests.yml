@@ -23,43 +23,43 @@ jobs:
           docker build -t ghcr.io/abhipatel18/simple-web-app:latest .
           docker push ghcr.io/abhipatel18/simple-web-app:latest
 
-integration-test:
-  needs: build-and-publish
-  runs-on: ubuntu-latest
-  permissions:
-    packages: read
-    contents: read
-
-  steps:
-    - name: Login to GHCR
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.CR_PAT }}
-
-    - name: Pull app image
-      run: docker pull ghcr.io/abhipatel18/simple-web-app:latest
-
-    - name: Start app container
-      run: |
-        docker run -d --rm -p 3000:3000 --health-cmd="curl http://localhost:3000/health || exit 1" --health-interval=10s --health-retries=5 --name app ghcr.io/abhipatel18/simple-web-app:latest
-
-    - name: Wait for app health
-      run: |
-        for i in {1..10}; do
-          if curl -f http://localhost:3000/health; then
-            echo "App is healthy!"
-            exit 0
-          else
-            echo "Waiting for app to be healthy..."
-            sleep 5
-          fi
-        done
-        exit 1
-
-    - name: Run integration test
-      run: curl -f http://localhost:3000/health
+  integration-test:
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+  
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
+  
+      - name: Pull app image
+        run: docker pull ghcr.io/abhipatel18/simple-web-app:latest
+  
+      - name: Start app container
+        run: |
+          docker run -d --rm -p 3000:3000 --health-cmd="curl http://localhost:3000/health || exit 1" --health-interval=10s --health-retries=5 --name app ghcr.io/abhipatel18/simple-web-app:latest
+  
+      - name: Wait for app health
+        run: |
+          for i in {1..10}; do
+            if curl -f http://localhost:3000/health; then
+              echo "App is healthy!"
+              exit 0
+            else
+              echo "Waiting for app to be healthy..."
+              sleep 5
+            fi
+          done
+          exit 1
+  
+      - name: Run integration test
+        run: curl -f http://localhost:3000/health
 
     - name: Stop app container
       if: always()

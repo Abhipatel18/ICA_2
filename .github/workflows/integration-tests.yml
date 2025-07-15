@@ -1,4 +1,3 @@
-
 name: Integration Tests with Service Container
 
 on:
@@ -29,7 +28,7 @@ jobs:
     permissions:
       packages: read
       contents: read
-  
+
     steps:
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -37,14 +36,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.CR_PAT }}
-  
+
       - name: Pull app image
         run: docker pull ghcr.io/abhipatel18/simple-web-app:latest
-  
+
       - name: Start app container
         run: |
-          docker run -d --rm -p 3000:3000 --health-cmd="curl http://localhost:3000/health || exit 1" --health-interval=10s --health-retries=5 --name app ghcr.io/abhipatel18/simple-web-app:latest
-  
+          docker run -d --rm -p 3000:3000 \
+            --health-cmd="curl -f http://localhost:3000/health || exit 1" \
+            --health-interval=10s \
+            --health-retries=5 \
+            --name app ghcr.io/abhipatel18/simple-web-app:latest
+
       - name: Wait for app health
         run: |
           for i in {1..10}; do
@@ -56,11 +59,12 @@ jobs:
               sleep 5
             fi
           done
+          echo "App did not become healthy in time."
           exit 1
-  
+
       - name: Run integration test
         run: curl -f http://localhost:3000/health
 
-    - name: Stop app container
-      if: always()
-      run: docker stop app
+      - name: Stop app container
+        if: always()
+        run: docker stop app

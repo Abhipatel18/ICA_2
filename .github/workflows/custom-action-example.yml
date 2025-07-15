@@ -1,0 +1,16 @@
+name: Use Custom Action
+
+on:
+  push:
+
+jobs:
+  test-env-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Setup Custom Action
+        uses: ./custom-actions/setup-test-env
+
+      - name: Run Test
+        run: npm test

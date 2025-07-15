@@ -1,0 +1,7 @@
+name: Setup Test Environment
+description: Custom action to install dependencies
+runs:
+  using: "composite"
+  steps:
+    - run: npm install
+      shell: bash

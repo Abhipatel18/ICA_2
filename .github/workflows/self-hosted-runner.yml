@@ -1,0 +1,19 @@
+name: Run on Self-Hosted Runners
+
+on:
+  workflow_dispatch:
+
+jobs:
+  linux-runner:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: echo "Running on Linux self-hosted runner"
+
+  windows-runner:
+    runs-on: [self-hosted, windows]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: echo "Running on Windows self-hosted runner"

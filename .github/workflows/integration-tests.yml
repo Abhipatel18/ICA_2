@@ -19,6 +19,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          sudo docker info | grep username
           sudo docker build -t ghcr.io/abhipatel18/simple-web-app:latest .
           sudo docker push ghcr.io/abhipatel18/simple-web-app:latest
 
